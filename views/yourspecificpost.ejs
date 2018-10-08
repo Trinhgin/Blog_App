@@ -1,0 +1,26 @@
+<html>
+
+<head>
+
+    <title>Your Posts</title>
+
+</head>
+
+<body>
+        <%- include navigation.ejs %>
+    <section id="your_specific_post">
+        <% for (let i= 0; i< yourposts.length; i++) { %>
+        <div>
+            <h2>
+                <%= yourposts[i].content %>
+            </h2>
+          
+           <a href="/<%= yourposts[i].id %>/delete">Delete post</a>
+         
+        </div>
+    </section>
+    
+
+</body>
+
+</html>

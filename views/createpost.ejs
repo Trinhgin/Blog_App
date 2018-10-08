@@ -1,0 +1,19 @@
+<html>
+<head>
+   
+    <title>Create Post</title>
+
+</head>
+<body>
+    <%- include navigation.ejs %>
+    <form id="create_post" action="/create_post" method="POST" autocomplete="off">
+            Post title
+            <input type="text" name="post_title">
+            <br>
+            Post Content
+            <textarea rows="4" cols="50" type="text" name="post_content"></textarea>
+            <br>
+            <input type="submit" value="create">
+    </form>    
+</body>
+</html>

@@ -1,0 +1,32 @@
+<html>
+
+<head>
+
+    <title>Posts</title>
+
+</head>
+
+<body>
+        <%- include navigation.ejs %>
+        
+        <section id="posts">
+            <% for(let i= 0; i< posts.length; i++) { %>
+                <div>
+                    <h2>
+                        <%= posts[i].title %>
+            
+                    </h2>
+                    <p>
+                        <%= posts[i].content %>
+                    </p>
+        
+                    <a href="/post/<%= posts[i].id %>">See comments</a>
+                    <a href="/comment/<%= posts[i].id %>">Leave comments</a>
+        
+                </div>
+                <%}%>
+        </section>
+    
+</body>
+
+</html>

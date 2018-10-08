@@ -1,0 +1,32 @@
+<html>
+
+<head>
+
+    <title>Your Posts</title>
+    <link rel="stylesheet" type="text/css" href="../public/css/style.css">
+
+</head>
+
+<body>
+        <%- include navigation.ejs %>
+    <section id="your_posts">
+        <h2>All of Your Posts</h2>
+        <% for (let i= 0; i< posts.length; i++) { %>
+        <div>
+            <h2>
+                <%= posts[i].title %>
+            </h2>
+            <p>
+                <%= posts[i].content %>
+            </p>
+           
+           <a href="/delete/<%= posts[i].id %>">Delete post</a><br>
+    
+        </div>
+        <%}%>
+    </section>
+    
+
+</body>
+
+</html>

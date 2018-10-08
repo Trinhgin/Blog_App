@@ -1,0 +1,20 @@
+<html>
+
+<head>
+    <title>Comments</title>
+</head>
+
+<body>
+    <%- include navigation.ejs %>
+    <section id="comments">
+        <form action="/comment/<%= postId %>" method="POST" autocomplete="off">
+            Leave Comment
+            <input type='text' name='inputComment' placeholder='Leave comment'>
+            <br>
+            <input type="submit" value="Create">
+        </form>
+       
+    </section>
+</body>
+
+</html>

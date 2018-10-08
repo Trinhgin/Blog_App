@@ -1,0 +1,30 @@
+<html>
+
+<head>
+
+    <title>Specific Posts</title>
+
+</head>
+
+<body>
+    <%- include navigation.ejs %>
+      <h2>
+                    <%= post.title %>
+            </h2>
+            
+            <h3>
+                    <%= post.content %>
+            </h3>
+    <% for(let i= 0; i< comments.length; i++) { %>
+        <div>
+            <p>
+                <%= comments[i].content %>
+    
+            <p>
+        </div>
+        <%}%>
+    
+
+</body>
+
+</html>
