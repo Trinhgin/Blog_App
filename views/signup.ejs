@@ -3,27 +3,47 @@
 <head>
 
     <title>Sign Up</title>
-    <link rel="stylesheet" type="text/css" href="../public/css/style.css">
-
+  
+<style>
+    body {
+        background-color: lightcyan;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        text-align: center;
+    }
+    h1 {
+        font-size: 40px;
+    }
+    h3 {
+        font-size: 30px;
+    }
+</style>
 </head>
 
 <body>
-    <%- include navigation.ejs %>
-    
-    <h1>Welcome To The Sign Up Page</h1>
-    <h3>Sign Up Form</h3>
-    <form action="/signup" method="POST">
-        Create Username
-        <input type='text' name='name' placeholder='Enter your name'>
-        <br>
-        Email
-        <input type='text' name='email' placeholder='Enter your email'>
-        <br>
-        Password
-        <input type='text' name='password' placeholder='Enter your password'>
-        <br>
-        <input type="submit" value="Create">
-    </form>
+        <img id="image" src="../public/css/images/blueparrot.jpg"/>
+    <section>
+          
+        <%- include navigation.ejs %>
+        <h1>Welcome To Our Sign Up Page</h1>
+        <h3>Sign Up Form</h3>
+        <form action="/signup" method="POST">
+            Create Username
+            <input type='text' name='name' placeholder='Enter your name'>
+            <br>
+            <br>
+            Email
+            <input type='text' name='email' placeholder='Enter your email'>
+            <br>
+            <br>
+            Password
+            <input type='text' name='password' placeholder='Enter your password'>
+            <br>
+            <br>
+            <input type="submit" value="Create">
+        </form><br>
+        <%- include footer.ejs %>
+    </section>
+
 </body>
 
 </html>

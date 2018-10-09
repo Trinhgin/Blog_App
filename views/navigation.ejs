@@ -1,6 +1,49 @@
-<div class="topnav">
-        <a class="active" href="/create_post">Create Post</a>
-        <a href="/your_posts">View Your Posts</a>
-        <a href="/all_posts">View All Posts</a>
-        <a href="/logout">Log Out</a>
-</div>
+<head>
+        <style>
+                .nav {
+                        background-color: #efefef;
+                        border-bottom: 1px solid #efefef;
+                        min-height: 50px;
+                        height: auto;
+                        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+                }
+
+                ul {
+                        list-style-type: none;
+                        margin: 0;
+                        padding: 0;
+                        overflow: hidden;
+                        background-color: lightslategray;
+
+                }
+
+                li {
+                        float: left;
+                }
+
+                li a {
+                        display: block;
+                        color: white;
+                        text-align: center;
+                        padding: 14px 16px;
+                        text-decoration: none;
+                }
+
+                /* Change the link color to #111 (black) on hover */
+                li a:hover {
+                        background-color: #111;
+                }
+        </style>
+</head>
+
+<body>
+        <nav class="nav">
+                <ul>
+                        <li><a class="active" href="/create_post">Create Post</a></li>
+                        <li><a href="/your_posts">View Your Posts</a></li>
+                        <li><a href="/all_posts">View All Posts</a></li>
+                        <li><a href="/logout">Log Out</a></li>
+                </ul>
+
+        </nav>
+</body>
