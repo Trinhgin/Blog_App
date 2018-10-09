@@ -6,6 +6,7 @@ const ejs = require('ejs');
 const session = require('express-session')
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const app = express();
+const bcrypt = require('bcrypt')
 
 //set up the database with sequelize
 const sequelize = new Sequelize(process.env.BLOGAPP, process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
@@ -19,7 +20,7 @@ const sequelize = new Sequelize(process.env.BLOGAPP, process.env.POSTGRES_USER, 
 })
 
 //connect with public folder (css, etc.)
-app.use(express.static('public'))
+app.use(express.static('../public'))
 
 //connect with template engine folder(ejs)
 app.set('views', '../views')
@@ -88,41 +89,81 @@ app.get('/', (req, res) => {
     var user = req.session.user
     res.render('home', { loginFailed: false })
 })
+// Route - Sign up
+app.get('/signup', (req, res) => {
+    res.render('signup');
+})
 
-//Route - check if user already exists in db
+app.post('/signup', (req, res) => {
+    // console.log("TEST REQ BODY " + JSON.stringify(req.body))
+    var inputname = req.body.name
+    var inputemail = req.body.email
+    var inputpassword = req.body.password
+    var saltRounds = 10
+    
+    bcrypt.hash(inputpassword, saltRounds).then( hash =>{ 
+    User.create({
+        name: inputname,
+        email: inputemail,
+        password: hash
+    }).then((user) => {
+        req.session.user = user;
+        res.redirect('welcome')
+    })
+    })
+       
+})
+
+//password validation
+
+app.get('/welcome', (req, res) => {
+    console.log("CHECK USER SESSION " + JSON.stringify(req.session.user))
+    var user = req.session.user;
+    if (user != null) {
+        console.log("CHECK USER" + JSON.stringify(user))
+        res.render('welcome')
+    } else {
+        res.redirect('/')
+    }
+})
+
+//Route - Log in & check if user already exists in db
 app.post('/', (req, res) => {
-    console.log('Check name' + JSON.stringify(req.body))
-    // var user = req.body.user
+
     var name = req.body.name
     var password = req.body.password
+
     if (name.length === 0) {
-        res.render('home', { loginFailed: true})
-        // res.render('oops');
+        res.render('home', { loginFailed: true })
         return;
     }
     if (password.length === 0) {
-        res.render('home', { loginFailed: true})
-        // res.render('oops');
+        res.render('home', { loginFailed: true })
         return;
     }
     User.findOne({
         where: {
-            name: name 
+            name: name
         }
-    }).then((user)=>{
-        console.log('PASSWORD TEST' + JSON.stringify(user))
-        if (name !== null && password === user.password) {
-            req.session.user = user;
-            res.redirect('welcome');
-        } else {
-            res.render('oops');
-        }
+    }).then((user) => {
+        // console.log('PASSWORD TEST' + JSON.stringify(user))
+        bcrypt.compare(password, user.password)
+        .then((result) => {
+            if (name !== null && result) {
+                req.session.user = user;
+                res.redirect('welcome');
+            } else {
+                res.render('oops');
+            }
+        });
+      
     })
 })
 
+
 //Route - Log out
 app.get('/logout', (req, res) => {
-    req.session.destroy((error) =>{
+    req.session.destroy((error) => {
         if (error) {
             throw error;
         }
@@ -131,41 +172,8 @@ app.get('/logout', (req, res) => {
 
 })
 
-// Route - Sign up
-app.get('/signup', (req, res) => {
-    res.render('signup'); 
-})
-
-app.post('/signup', (req, res) => {
-    console.log("TEST REQ BODY " + JSON.stringify(req.body))
-    var inputname = req.body.name
-    var inputemail = req.body.email
-    var inputpassword = req.body.password
-    console.log("User's credentials: " + inputname + " " + inputemail + " " + inputpassword);
-
-    User.create({
-        name: inputname,
-        email: inputemail,
-        password: inputpassword
-    }).then((user) => {
-        req.session.user = user;
-        res.redirect('welcome')
-    })
-})
-
-app.get('/welcome', (req,res)=>{
-    console.log("CHECK USER SESSION " + JSON.stringify(req.session.user))
-    var user = req.session.user;
-    if(user != null){
-        console.log("CHECK USER" + JSON.stringify(user))
-        res.render('welcome')
-    }else{
-        res.redirect('/')
-    }
-})
-
 //Route - Create post
-app.get('/create_post', (req,res)=>{
+app.get('/create_post', (req, res) => {
     res.render('createpost')
 })
 
@@ -184,7 +192,7 @@ app.post('/create_post', (req, res) => {
         .then(() => {
             res.redirect('your_posts')
         })
-        .catch((err)=>{
+        .catch((err) => {
             console.log("ERROR " + err);
         });
 })
@@ -195,9 +203,9 @@ app.get('/delete/:id', (req, res) => {
             id: req.params.id
         }
     })
-    .then(() => {
-        res.redirect('/your_posts')
-    })
+        .then(() => {
+            res.redirect('/your_posts')
+        })
 })
 
 //Route - display all of your posts
@@ -241,15 +249,15 @@ app.get('/yourspecificpost/:postId', (req, res) => {
 })
 
 //Route - display all posts
-app.get('/all_posts', (req,res)=>{//  /allposts is the form action where the GET/POST goes to
+app.get('/all_posts', (req, res) => {//  /allposts is the form action where the GET/POST goes to
     Post.findAll({
-        include:[{
+        include: [{
             model: User
-        }] 
+        }]
     })
-    .then((allposts)=>{
-        res.render('posts', {posts: allposts})
-    })
+        .then((allposts) => {
+            res.render('posts', { posts: allposts })
+        })
 })
 //Route - display a specific post of other users
 app.get('/post/:postId', (req, res) => {
@@ -262,57 +270,47 @@ app.get('/post/:postId', (req, res) => {
             model: User
         }]
     })
-    .then((post)=>{
-        Comments.findAll({
-            where:{
-                postId: postId
-            }
+        .then((post) => {
+            Comments.findAll({
+                where: {
+                    postId: postId
+                },
+                include: [{
+                    model: User
+                }]
+            })
+                .then((comments) => {
+                    res.render('specificpost', { post: post, comments: comments })
+                })
         })
-        .then((comments) => {
-            res.render('specificpost',{post: post, comments: comments})
-        })
-    })
 })
 
 // Route - Leave comments
 
-app.get('/comment/:postId', (req,res)=>{
+app.get('/comment/:postId', (req, res) => {
     let postId = req.params.postId
-    res.render('comments', {postId: postId})
+    res.render('comments', { postId: postId })
 })
 
-app.post('/comment/:postId', (req,res)=>{
+app.post('/comment/:postId', (req, res) => {
     let postId = req.params.postId
     let userId = req.session.user.id
     let inputComment = req.body.inputComment
     // console.log("INPUT COMMENT " + req.body.inputComment)
 
- Comments.create({
-     postId: postId,
-     content: inputComment,
-     userId: userId
- })
- .then((comment)=>{
-     let postId = comment.postId
-     res.redirect('/post/' + postId)
- })
+    Comments.create({
+        postId: postId,
+        content: inputComment,
+        userId: userId
+    })
+        .then((comment) => {
+            let postId = comment.postId
+            res.redirect('/post/' + postId)
+        })
 })
 
-sequelize.sync({force: false})
-.then(()=>{
-    User.bulkCreate([
-        {name: "persona", email:"a@test.com", password:123, userId: 1},
-        {name: "personb", email:"b@test.com", password:123, userId: 2},
-    ], { ignoreDuplicates: true })
-})
-.then(()=>{
-    Post.bulkCreate([
-        {id: 1, title: "persona post 1", content:"persona post 1 content", userId: 1},
-        {id: 2, title: "persona post 2", content:"persona post 2 content", userId: 1},
-        {id: 3, title: "personb post 1", content:"personb post 1 content", userId: 2},
-        {id: 4, title: "personb post 2", content:"personb post 2 content", userId: 2},
-    ], { ignoreDuplicates: true })
-})
+sequelize.sync({ force: false})
+ 
 
 app.listen(3000, () => {
     console.log('App is running on port 3000');

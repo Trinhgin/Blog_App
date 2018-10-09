@@ -17,10 +17,11 @@
             </h3>
     <% for(let i= 0; i< comments.length; i++) { %>
         <div>
-            <p>
-                <%= comments[i].content %>
+            <h3>
+                <%= comments[i].content %> </h3>
+               <p> <%= comments[i].user.name %></p>
     
-            <p>
+           
         </div>
         <%}%>
     
