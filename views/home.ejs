@@ -3,20 +3,21 @@
 <head>
 
     <title>Home</title>
-    <link rel="stylesheet" type="text/css" src="../public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
 </head>
 
 <body>
-    
+       
     <section class="home">
-
+           
     <% if (loginFailed) { %>
     <h1>Oops! Please try again :)</h1>
     <% } %>
-
-    <form id="login_form" action="/" method="POST" autocomplete="off">
+        <h1>Welcome To Our Homepage</h1>
+    <form id="form" action="/" method="POST" autocomplete="off">
         Your name
         <input type='text' name='name'>
         <br>
@@ -30,11 +31,12 @@
     </form>
     <br>
     <br>
-    <p id="signup" href="/signup">Or sign up below:)</p>
+    <p id="signup" href="/signup">Or sign up below :)</p>
     <div id="signuplink">
     <a  href="/signup">Sign Up</a>
 </div>
-</section>
+</section><br>
+<%- include footer.ejs %>
 </body>
 
 </html>

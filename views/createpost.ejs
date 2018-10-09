@@ -2,18 +2,35 @@
 <head>
    
     <title>Create Post</title>
-
+    <style>
+            body {
+                background-color: lightcyan;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                text-align: center;
+            
+            }
+            .createpost {
+                font-size: 25px;
+            }
+          
+          
+        </style>
 </head>
 <body>
     <%- include navigation.ejs %>
-    <form id="create_post" action="/create_post" method="POST" autocomplete="off">
-            Post title
-            <input type="text" name="post_title">
-            <br>
-            Post Content
-            <textarea rows="4" cols="50" type="text" name="post_content"></textarea>
-            <br>
-            <input type="submit" value="create">
-    </form>    
+    <section class="createpost">
+        <img id="image" src="../public/css/images/bluebird.jpg"/>
+            <form action="/create_post" method="POST" autocomplete="off">
+                Post title
+                <textarea rows="1" cols="50" type="text" name="post_title"></textarea>
+                <br>
+                Post Content
+                <textarea rows="4" cols="50" type="text" name="post_content"></textarea>
+                <br>
+                <input type="submit" value="create">
+        </form> 
+    </section>
+      
+    <%- include footer.ejs %>
 </body>
 </html>
