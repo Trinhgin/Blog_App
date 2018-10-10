@@ -299,20 +299,6 @@ app.post('/comment/:postId', (req,res)=>{
 })
 
 sequelize.sync({force: false})
-.then(()=>{
-    User.bulkCreate([
-        {name: "persona", email:"a@test.com", password:123, userId: 1},
-        {name: "personb", email:"b@test.com", password:123, userId: 2},
-    ], { ignoreDuplicates: true })
-})
-.then(()=>{
-    Post.bulkCreate([
-        {id: 1, title: "persona post 1", content:"persona post 1 content", userId: 1},
-        {id: 2, title: "persona post 2", content:"persona post 2 content", userId: 1},
-        {id: 3, title: "personb post 1", content:"personb post 1 content", userId: 2},
-        {id: 4, title: "personb post 2", content:"personb post 2 content", userId: 2},
-    ], { ignoreDuplicates: true })
-})
 
 app.listen(3000, () => {
     console.log('App is running on port 3000');
