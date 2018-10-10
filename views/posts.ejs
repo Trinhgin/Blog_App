@@ -19,6 +19,7 @@
                     <p>
                         <%= posts[i].content %>
                     </p>
+                    <p><%= posts[i].user.name %></p>
         
                     <a href="/post/<%= posts[i].id %>">See comments</a>
                     <a href="/comment/<%= posts[i].id %>">Leave comments</a>
