@@ -1,5 +1,9 @@
-body {background-color:aquamarine;}
+body {background-color:lightblue;}
 h1   {color: grey;}
+
+.home {
+    text-align: center;
+}
 #login_form {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 30px;
@@ -17,3 +21,12 @@ h1   {color: grey;}
     font-size: 15px;
     text-align: center;
 }
+
+#password_pattern {
+    font-size: 13px;
+    color: red;
+  }
+
+  .signup {
+    text-align: center;
+  }

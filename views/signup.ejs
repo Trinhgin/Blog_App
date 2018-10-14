@@ -3,37 +3,96 @@
 <head>
 
     <title>Sign Up</title>
-    <script type="text/javascript" src="/validate.js"></script>
-   
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script type="text/javascript" src="validate.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 
 <body>
-       
-    <section>
-          
+
+    <section class="signup">
+
         <%- include navigation.ejs %>
+
         <h1>Welcome To Our Sign Up Page</h1>
+
+        <% if (signupFailed) { %>
+        <h2>Oops! Please try again :)</h2>
+        <% } %>
+
         <h3>Sign Up Form</h3>
-        <form name="signupform" action="/signup" method="POST">
+
+        <div id="input_errors"></div>
+
+        <form class='signupform' name="signupform" action="/signup" method="POST">
+
             Create Username
-            <input type='text' name='name' placeholder='Enter your name' required minlength='6' maxlength="10"/>
+            <input type='text' name='name' placeholder='Enter your name' />
             <br>
             <br>
+
             Email
-            <input type='text' name='email' placeholder='Enter your email'>
+            <input type='email' name='email' placeholder='Enter your email' />
             <br>
             <br>
+
             Password
-            <input type='text' name='password' placeholder='Enter your password' required minlength="8" />
+            <input type='text' name='password' placeholder='Enter your password' />
             <br>
-            <p class="password_pattern">Your password must be at least 8 characters long, with one upper or lower case, and one number </p>
-            <br>Confirm Password
-            <input type='text' name='confirmpassword' placeholder='Re-enter password' required minlength="8" />
             <br>
+
+            <p id="password_pattern">Your password must be at least 8 characters long </p>
+            <br>
+
+            Confirm Password
+            <input type='text' name='confirmpassword' placeholder='Re-enter password' />
+            <br>
+            <br>
+
             <input type="submit" value="Create">
-        </form><br>
-        <%- include footer.ejs %>
+        </form>
+        <br>
+        <br>
+
     </section>
-  
+    <%- include footer.ejs %>
+    <script type="text/javascript">
+        var validator = new FormValidator('signupform',
+            [
+                {
+                    name: 'name',
+                    display: 'username',
+                    rules: 'required|alpha_numeric'
+                }, {
+                    name: 'email',
+                    rules: 'required|valid_email'
+                }, {
+                    name: 'password',
+                    rules: 'required|min_length[8]'
+                }, {
+                    name: 'confirmpassword',
+                    display: 'password confirmation',
+                    rules: 'required|matches[password]'
+                }
+            ],
+            function (errors, event) {
+                if (errors.length > 0) {
+                    event.preventDefault()
+
+                    var errorString = '';
+                    for (var i = 0; i < errors.length; i++) {
+                        var error = errors[i]
+                        for (var j = 0; j < error.messages.length; j++) {
+                            errorString += error.messages[j] + '<br />';
+                        }
+                    }
+                    $("#input_errors").html(errorString);
+                }
+            });
+
+    </script>
 </body>
+
 </html>

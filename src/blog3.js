@@ -85,14 +85,45 @@ Post.belongsTo(User, { foreignKey: { allowNull: false } });
 Comments.belongsTo(Post, { foreignKey: { allowNull: false } });
 Comments.belongsTo(User, { foreignKey: { allowNull: false } });
 
-//Route - Home
+//Route - Home & Login
 app.get('/', (req, res) => {
     var user = req.session.user
     res.render('home', { loginFailed: false })
 })
+
+app.post('/', (req, res) => {
+    var password = req.body.password
+    var email = req.body.email
+    if (password == null || password.length <= 8 ||
+        email == null || email.length == 0) {
+        res.render('home', { loginFailed: true })
+        return;
+    }
+
+    User.findOne({
+        where: {
+            email: email
+        }
+    }).then((user) => {
+        // console.log('PASSWORD TEST' + JSON.stringify(user))
+        bcrypt.compare(password, user.password)
+            .then((result) => {
+                if (result) {
+                    req.session.user = user;
+                    res.redirect('welcome');
+                } else {
+                    res.render('home', { loginFailed: true });
+                }
+            });
+    }).catch((err) => {
+        console.log(err, err.stack);
+        res.render('home', { loginFailed: true })
+    })
+})
+
 // Route - Sign up
 app.get('/signup', (req, res) => {
-    res.render('signup');
+    res.render('signup', { signupFailed: false });
 })
 
 app.post('/signup', (req, res) => {
@@ -101,27 +132,34 @@ app.post('/signup', (req, res) => {
     var inputemail = req.body.email
     var inputpassword = req.body.password
     var confirmpassword = req.body.confirmpassword
+    var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     var saltRounds = 10
 
-    if (inputpassword !== null && 
-        inputpassword.length >= 8 &&
-        inputpassword == confirmpassword) {
+    if (
+        inputpassword == null ||
+        inputpassword.length < 8 ||
+        inputpassword !== confirmpassword ||
+        inputemail == null ||
+        regex.test(inputemail) == false
+    ) {
+        res.render('signup', { signupFailed: true })
 
+    } else {
         bcrypt.hash(inputpassword, saltRounds).then(hash => {
-            
+
             User.create({
                 name: inputname,
                 email: inputemail,
                 password: hash
             }).then((user) => {
-                
+
                 req.session.user = user;
                 res.redirect('/welcome')
             })
-            // .catch((err) => {
-            //     console.log(err, err.stack)
-            //     res.redirect('/oops')
-            // })
+                .catch((err) => {
+                    console.log(err, err.stack)
+                    res.render('signup', { signupFailed: true })
+                })
         })
     }
 })
@@ -135,39 +173,6 @@ app.get('/welcome', (req, res) => {
     } else {
         res.redirect('/')
     }
-})
-
-//Route - Log in & check if user already exists in db
-app.post('/', (req, res) => {
-
-    var name = req.body.name
-    var password = req.body.password
-
-    if (name.length === 0) {
-        res.render('home', { loginFailed: true })
-        return;
-    }
-    if (password.length === 0) {
-        res.render('home', { loginFailed: true })
-        return;
-    }
-    User.findOne({
-        where: {
-            name: name
-        }
-    }).then((user) => {
-        // console.log('PASSWORD TEST' + JSON.stringify(user))
-        bcrypt.compare(password, user.password)
-            .then((result) => {
-                if (name !== null && result) {
-                    req.session.user = user;
-                    res.redirect('welcome');
-                } else {
-                    res.render('oops');
-                }
-            });
-
-    })
 })
 
 
